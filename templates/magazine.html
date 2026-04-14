@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lobby News Weekly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Playfair+Display:wght@700;900&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    body, p, h1, h2, h3, h4, h5, a, img, td, table {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+    body {
+      background-color: #f2f2f2;
+      color: #1a1a1a;
+      padding: 40px 10px;
+      -webkit-font-smoothing: antialiased;
+    }
+    table {
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+    
+    .brand-serif { font-family: 'Playfair Display', serif; }
+    .body-serif { font-family: 'Libre Baskerville', serif; }
+    .sans { font-family: 'Work Sans', sans-serif; }
+    
+    .canvas {
+      max-width: 850px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 30px 40px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .thick-line { border-bottom: 5px solid #1a1a1a; margin: 20px 0; }
+    .thin-line { border-bottom: 1px solid #1a1a1a; margin: 20px 0; }
+    .vertical-line { border-left: 1px solid #1a1a1a; }
+    .grid-divider { border-right: 1px solid #1a1a1a; }
+    
+    .full-width { width: 100%; }
+    .img-fluid { width: 100%; height: auto; display: block; object-fit: cover; }
+    
+    /* MASTHEAD */
+    .masthead-title { font-size: 90px; font-weight: 900; letter-spacing: -2px; margin-bottom: 5px; line-height: 1; text-align: center; }
+    .masthead-subtitle { font-size: 24px; font-weight: 400; letter-spacing: 5px; text-transform: uppercase; float: left; margin-left: 5px; }
+    .meta-text { font-size: 11px; line-height: 1.4; color: #333; text-transform: uppercase; letter-spacing: 1px; }
+    
+    /* HERO SECTION */
+    .cat-tag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #555; margin-bottom: 5px; }
+    .hero-title { font-size: 40px; font-weight: 700; line-height: 1.1; margin-bottom: 15px; margin-top: 15px; letter-spacing: -0.5px; }
+    .hero-summary { font-size: 14px; line-height: 1.6; color: #1a1a1a; text-align: justify; margin-bottom: 15px; }
+    
+    /* 3-COLUMN GRID */
+    .grid-col { width: 33.33%; vertical-align: top; padding: 0 15px; }
+    .grid-col:first-child { padding-left: 0; }
+    .grid-col:last-child { padding-right: 0; border-right: none; }
+    
+    .grid-title { font-size: 18px; font-weight: 700; color: #1a1a1a; margin: 15px 0 10px 0; line-height: 1.2; text-align: left; }
+    .grid-summary { font-size: 12px; line-height: 1.5; color: #333; text-align: left; margin-bottom: 10px; }
+    .grid-img { height: 180px; }
+
+    /* LINKS / SOURCES */
+    .link-section {
+      font-size: 10px;
+      font-weight: 600;
+      color: #0044cc;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 10px;
+      border-top: 1px dotted #ccc;
+      padding-top: 10px;
+      text-align: left;
+    }
+    .link-section a {
+      color: #0044cc;
+      text-decoration: none;
+    }
+
+    /* FOOTER */
+    .footer { text-align: center; font-size: 10px; color: #666; margin-top: 20px; letter-spacing: 1px; }
+
+  </style>
+</head>
+<body>
+  
+  <div class="canvas">
+    
+    <!-- MASTHEAD -->
+    <table class="full-width">
+      <tr>
+        <td>
+          <div class="brand-serif masthead-title">LOBBY NEWS</div>
+        </td>
+      </tr>
+    </table>
+    
+    <table class="full-width">
+      <tr>
+        <td style="width: 40%; vertical-align: middle;">
+          <div class="body-serif masthead-subtitle">HOSPITALITY</div>
+        </td>
+        <td class="vertical-line" style="width: 60%; padding-left: 15px; vertical-align: middle;">
+          <div class="sans meta-text" style="float: right;">Sunday Edition &bull; {{ date }}</div>
+        </td>
+      </tr>
+    </table>
+    
+    <div class="thick-line"></div>
+    
+    <!-- MAIN HEADLINE / HERO ARTICLE (1) -->
+    <table class="full-width">
+      <tr>
+        <td style="padding-bottom: 20px;">
+          <a href="{{ hero_article.url }}" style="text-decoration: none; color: inherit;">
+            <img src="{{ hero_article.image }}" class="img-fluid" style="display: block; width: 100%; max-width: 850px; height: 480px; object-fit: cover; margin-bottom: 15px;" alt="Main Hero Image" width="850" border="0">
+            <div class="sans cat-tag">{{ hero_article.tag }}</div>
+            <div class="brand-serif hero-title">{{ hero_article.title }}</div>
+            <div class="body-serif hero-summary">{{ hero_article.summary }}</div>
+          </a>
+          <div class="sans link-section">
+            <span style="color:#555;">SOURCE: {{ hero_article.source }}</span> &nbsp;|&nbsp; 
+            <a href="{{ hero_article.url }}">Read Full Article &rarr;</a>
+          </div>
+        </td>
+      </tr>
+    </table>
+    
+    <div class="thick-line"></div>
+    
+    <!-- GRID ROW 1 (3 Articles) -->
+    <table class="full-width">
+      <tr>
+        {% for article in grid_articles %}
+        <td class="grid-col {% if not loop.last %}grid-divider{% endif %}">
+          <a href="{{ article.url }}" style="text-decoration: none; color: inherit;">
+            <img src="{{ article.image }}" class="img-fluid grid-img" alt="Grid Image" style="display: block; width: 100%; max-width: 250px; height: 180px; object-fit: cover;" width="250" border="0">
+            <div class="brand-serif grid-title">{{ article.title }}</div>
+            <div class="body-serif grid-summary">{{ article.summary }}</div>
+          </a>
+          <div class="sans link-section">
+            <span style="color:#555;">SRC: {{ article.source }}</span><br>
+            <a href="{{ article.url }}">Read Full Article &rarr;</a>
+          </div>
+        </td>
+        {% endfor %}
+      </tr>
+    </table>
+    
+    <div class="thin-line"></div>
+    
+    <!-- GRID ROW 2 (3 Articles) -->
+    <table class="full-width">
+      <tr>
+        {% for article in bottom_articles %}
+        <td class="grid-col {% if not loop.last %}grid-divider{% endif %}">
+          <a href="{{ article.url }}" style="text-decoration: none; color: inherit;">
+            <img src="{{ article.image }}" class="img-fluid grid-img" alt="Grid Image" style="display: block; width: 100%; max-width: 250px; height: 180px; object-fit: cover;" width="250" border="0">
+            <div class="brand-serif grid-title">{{ article.title }}</div>
+            <div class="body-serif grid-summary">{{ article.summary }}</div>
+          </a>
+          <div class="sans link-section">
+            <span style="color:#555;">SRC: {{ article.source }}</span><br>
+            <a href="{{ article.url }}">Read Full Article &rarr;</a>
+          </div>
+        </td>
+        {% endfor %}
+      </tr>
+    </table>
+    
+    <div class="thick-line" style="margin-top: 30px;"></div>
+    
+    <!-- FOOTER -->
+    <div class="sans footer">
+      &copy; {{ year }} LOBBY NEWS &bull; PAPERLESS INTERIOR DESIGNER
+    </div>
+    
+  </div>
+
+</body>
+</html>

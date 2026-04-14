@@ -1,0 +1,56 @@
+name: Generate and Distribute Sunday Magazine
+
+on:
+  schedule:
+    # Triggers every Sunday at 8:30 PM UTC
+    # Triggers every Sunday at 8:30 PM in your local time (UTC+8)
+    # 8:30 PM UTC+8 = 12:30 UTC
+    - cron: '30 12 * * 0'
+  workflow_dispatch: # This allows you to click a "Run Now" button manually
+
+jobs:
+  build-and-distribute:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to publish the free website
+
+    steps:
+    - name: Checkout Code Repository
+      uses: actions/checkout@v3
+
+    - name: Turn on Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install AI & Web Scraping Libraries
+      run: |
+        python -m pip install --upgrade pip
+        pip install feedparser beautifulsoup4 lxml jinja2
+
+    - name: Fetch Live News & Generate the Magazine (HTML)
+      run: python draft_generator.py
+
+    - name: Deliver Email to Me
+      env:
+        GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+        GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+      run: python email_delivery.py
+
+    - name: Host Magazine on GitHub Pages (Free Web Hosting)
+      run: |
+        cp draft_preview.html index.html
+    
+    - name: Deploy to Cloud Web Server
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
+        keep_files: true
+        publish_branch: gh-pages
+        exclude_assets: '.github,*.py'
+
+    - name: Broadcast to LinkedIn
+      env:
+        LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+      run: python linkedin_autopost.py
