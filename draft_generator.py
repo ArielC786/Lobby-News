@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
-from news_fetcher import fetch_latest_news
+from news_fetcher import fetch_latest_news, save_to_history
 
 def generate_draft():
     env = Environment(loader=FileSystemLoader('templates'))
@@ -15,16 +15,15 @@ def generate_draft():
         # Fallback to simple list if fetching fails
         real_news = [{"title":"Placeholder", "summary":"Summary text", "url":"#", "image":"https://images.unsplash.com/photo-1542314831-c6a4d14d8373", "source":"Lobby News", "tag":"NEWS"} for _ in range(7)]
 
-    hero_article = real_news[0]
-    grid_articles = real_news[1:4]
-    bottom_articles = real_news[4:7]
+    # Record these articles as "seen" so they don't repeat in the next run
+    used_urls = [article['url'] for article in real_news if article['url'] != "#"]
+    if used_urls:
+        save_to_history(used_urls)
 
     mock_data = {
         "date": datetime.now().strftime("%B %d, %Y"),
         "year": datetime.now().year,
-        "hero_article": hero_article,
-        "grid_articles": grid_articles,
-        "bottom_articles": bottom_articles
+        "articles": real_news
     }
 
     html_output = template.render(**mock_data)
