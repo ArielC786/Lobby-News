@@ -1,8 +1,9 @@
 import os
 import smtplib
 from email.message import EmailMessage
+from email.utils import formataddr
 
-def send_summary_email():
+def send_summary_email(pdf_path=None):
     sender_email = os.environ.get('GMAIL_ADDRESS')
     app_password = os.environ.get('GMAIL_APP_PASSWORD')
     receiver_email = sender_email  # Sending securely to yourself
@@ -22,12 +23,28 @@ def send_summary_email():
     # Setup the email body
     msg = EmailMessage()
     msg['Subject'] = 'Here is your Weekly Lobby News Magazine!'
-    msg['From'] = f"Lobby News <{sender_email}>"
+    msg['From'] = formataddr(("Lobby News", sender_email))
     msg['To'] = receiver_email
     
     # Set fallback text and attach the full HTML
     msg.set_content("Please enable HTML viewing in your email client to read the Lobby News Magazine.")
     msg.add_alternative(html_content, subtype='html')
+
+    # Attach PDF if provided
+    if pdf_path and os.path.exists(pdf_path):
+        try:
+            with open(pdf_path, 'rb') as f:
+                file_data = f.read()
+                file_name = os.path.basename(pdf_path)
+            msg.add_attachment(
+                file_data,
+                maintype='application',
+                subtype='pdf',
+                filename=file_name
+            )
+            print(f"Attached PDF: {file_name}")
+        except Exception as e:
+            print(f"Failed to attach PDF: {e}")
 
     try:
         print(f"Connecting to Gmail SMTP to deliver to {receiver_email}...")
@@ -39,4 +56,6 @@ def send_summary_email():
         print(f"Failed to send email: {e}")
 
 if __name__ == "__main__":
-    send_summary_email()
+    # Check if a PDF carousel was generated
+    pdf_candidate = 'Lobby_News_Carousel.pdf'
+    send_summary_email(pdf_path=pdf_candidate if os.path.exists(pdf_candidate) else None)
