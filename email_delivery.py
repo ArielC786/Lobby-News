@@ -3,34 +3,22 @@ import smtplib
 from email.message import EmailMessage
 from email.utils import formataddr
 
-def send_summary_email(pdf_path=None):
+def send_summary_email(pdf_path=None, html_path='draft_preview.html'):
     sender_email = os.environ.get('GMAIL_ADDRESS')
     app_password = os.environ.get('GMAIL_APP_PASSWORD')
-    receiver_email = sender_email  # Sending securely to yourself
+    receiver_email = sender_email
 
     if not sender_email or not app_password:
         print("Missing Gmail credentials. Please set GMAIL_ADDRESS and GMAIL_APP_PASSWORD secrets.")
         return
 
-    # Read the generated magazine HTML
-    try:
-        with open('draft_preview.html', 'r', encoding='utf-8') as f:
-            html_content = f.read()
-    except FileNotFoundError:
-        print("draft_preview.html not found. Make sure the generator ran successfully.")
-        return
-
-    # Setup the email body
     msg = EmailMessage()
-    msg['Subject'] = 'Here is your Weekly Lobby News Magazine!'
+    msg['Subject'] = 'Lobby News — Weekly Carousel PDF'
     msg['From'] = formataddr(("Lobby News", sender_email))
     msg['To'] = receiver_email
-    
-    # Set fallback text and attach the full HTML
-    msg.set_content("Please enable HTML viewing in your email client to read the Lobby News Magazine.")
-    msg.add_alternative(html_content, subtype='html')
 
-    # Attach PDF if provided
+    attached_pdf = False
+
     if pdf_path and os.path.exists(pdf_path):
         try:
             with open(pdf_path, 'rb') as f:
@@ -42,9 +30,23 @@ def send_summary_email(pdf_path=None):
                 subtype='pdf',
                 filename=file_name
             )
+            attached_pdf = True
             print(f"Attached PDF: {file_name}")
         except Exception as e:
             print(f"Failed to attach PDF: {e}")
+
+    if attached_pdf:
+        msg.set_content("Your Lobby News carousel PDF is attached.")
+    else:
+        try:
+            with open(html_path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+        except FileNotFoundError:
+            print(f"{html_path} not found. Make sure the generator ran successfully.")
+            return
+
+        msg.set_content("PDF generation was unavailable; the HTML edition is included in this email.")
+        msg.add_alternative(html_content, subtype='html')
 
     try:
         print(f"Connecting to Gmail SMTP to deliver to {receiver_email}...")
