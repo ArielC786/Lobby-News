@@ -13,11 +13,11 @@ def send_summary_email(pdf_path=None, html_path='draft_preview.html'):
         return
 
     msg = EmailMessage()
-    msg['Subject'] = 'Lobby News — Weekly Carousel PDF'
     msg['From'] = formataddr(("Lobby News", sender_email))
     msg['To'] = receiver_email
 
     if pdf_path and os.path.exists(pdf_path):
+        msg['Subject'] = 'Lobby News — Weekly Carousel PDF'
         msg.set_content("Your Lobby News carousel PDF is attached.")
         try:
             with open(pdf_path, 'rb') as f:
@@ -33,6 +33,7 @@ def send_summary_email(pdf_path=None, html_path='draft_preview.html'):
         except Exception as e:
             print(f"Failed to attach PDF: {e}")
     else:
+        msg['Subject'] = 'Lobby News — Weekly Edition (HTML)'
         try:
             with open(html_path, 'r', encoding='utf-8') as f:
                 html_content = f.read()
