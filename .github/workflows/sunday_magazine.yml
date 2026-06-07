@@ -40,17 +40,44 @@ jobs:
       shell: bash
       run: |
         set -euo pipefail
-        export PUPPETEER_CACHE_DIR="$RUNNER_TEMP/puppeteer"
-        rm -rf "$PUPPETEER_CACHE_DIR"
+        CHROME_BIN=""
+        if command -v google-chrome >/dev/null 2>&1; then
+          CHROME_BIN="$(command -v google-chrome)"
+        elif command -v google-chrome-stable >/dev/null 2>&1; then
+          CHROME_BIN="$(command -v google-chrome-stable)"
+        elif command -v chromium >/dev/null 2>&1; then
+          CHROME_BIN="$(command -v chromium)"
+        elif command -v chromium-browser >/dev/null 2>&1; then
+          CHROME_BIN="$(command -v chromium-browser)"
+        fi
+
+        if [ -z "$CHROME_BIN" ]; then
+          sudo apt-get update
+          sudo apt-get install -y chromium || sudo apt-get install -y chromium-browser
+          if command -v chromium >/dev/null 2>&1; then
+            CHROME_BIN="$(command -v chromium)"
+          elif command -v chromium-browser >/dev/null 2>&1; then
+            CHROME_BIN="$(command -v chromium-browser)"
+          fi
+        fi
+
+        echo "Using Chrome executable: ${CHROME_BIN:-<not found>}"
+        test -n "$CHROME_BIN"
+        export CHROME_BIN
+
         npm init -y >/dev/null 2>&1
-        npm i --no-fund --no-audit puppeteer@24.15.0
-        npx puppeteer browsers install chrome@stable
+        npm i --no-fund --no-audit puppeteer-core@24.15.0
         node - <<'NODE'
-        const puppeteer = require('puppeteer');
+        const puppeteer = require('puppeteer-core');
+        const chromePath = process.env.CHROME_BIN;
+        if (!chromePath) {
+          throw new Error('CHROME_BIN is not set');
+        }
 
         (async () => {
           const browser = await puppeteer.launch({
             headless: true,
+            executablePath: chromePath,
             args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
           });
           const page = await browser.newPage();
