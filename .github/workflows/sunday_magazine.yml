@@ -31,7 +31,29 @@ jobs:
     - name: Fetch Live News & Generate the Magazine (HTML)
       run: python draft_generator.py
 
-    - name: Deliver Email to Me
+    - name: Generate PDF Carousel
+      shell: bash
+      run: |
+        set -euo pipefail
+        sudo apt-get update
+        sudo apt-get install -y chromium || sudo apt-get install -y chromium-browser
+
+        if command -v chromium-browser >/dev/null 2>&1; then
+          BROWSER="chromium-browser"
+        else
+          BROWSER="chromium"
+        fi
+
+        "$BROWSER" \
+          --headless \
+          --no-sandbox \
+          --disable-gpu \
+          --virtual-time-budget=20000 \
+          --print-to-pdf=Lobby_News_Carousel.pdf \
+          --print-to-pdf-no-header \
+          "file://$PWD/draft_preview.html"
+
+    - name: Deliver Email to Me (PDF)
       env:
         GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
         GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
