@@ -30,12 +30,12 @@ def post_to_linkedin():
 
     # Draft the LinkedIn post payload
     post_content = (
-        "Welcome to this week's Sunday Edition of Lobby News!\n\n"
+        "Welcome to this week's edition of Lobby News! 🗞️✨\n\n"
         f"Top Story: {headline}\n\n"
-        "We curate the best hospitality projects, hotel openings, and architecture innovations paper-free.\n"
-        "Read the full, interactive smart-magazine here:\n"
+        "We curate the best hospitality projects, hotel openings, and architecture innovations.\n"
+        "Swipe through the PDF carousel below for this week's highlights, or read the full interactive magazine here:\n"
         f"{public_url}\n\n"
-        "#HospitalityDesign #Architecture #InteriorDesign #LobbyNews"
+        "#HospitalityDesign #Architecture #InteriorDesign #LobbyNews #HotelDesign #HospitalityTech #ArchDaily"
     )
 
     print("Fetching LinkedIn User Authority...")
