@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/ArielC786/Lobby-News#readme",
   "dependencies": {
-    "puppeteer": "^22.15.0"
+    "puppeteer-core": "^24.15.0"
   }
 }
