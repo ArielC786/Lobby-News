@@ -44,6 +44,7 @@ jobs:
         rm -rf "$PUPPETEER_CACHE_DIR"
         npm init -y >/dev/null 2>&1
         npm i --no-fund --no-audit puppeteer@24.15.0
+        npx puppeteer browsers install chrome@stable
         node - <<'NODE'
         const puppeteer = require('puppeteer');
 
