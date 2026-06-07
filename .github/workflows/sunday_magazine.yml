@@ -40,14 +40,16 @@ jobs:
       shell: bash
       run: |
         set -euo pipefail
+        export PUPPETEER_CACHE_DIR="$RUNNER_TEMP/puppeteer"
+        rm -rf "$PUPPETEER_CACHE_DIR"
         npm init -y >/dev/null 2>&1
-        npm i --no-fund --no-audit puppeteer@22
-        npx puppeteer browsers install chrome
+        npm i --no-fund --no-audit puppeteer@24.15.0
         node - <<'NODE'
         const puppeteer = require('puppeteer');
 
         (async () => {
           const browser = await puppeteer.launch({
+            headless: true,
             args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
           });
           const page = await browser.newPage();
