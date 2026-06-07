@@ -37,11 +37,13 @@ jobs:
         node-version: '24'
 
     - name: Generate PDF Carousel
+      continue-on-error: true
       shell: bash
       run: |
         set -euo pipefail
         npm init -y >/dev/null 2>&1
-        npm i puppeteer@22 >/dev/null 2>&1
+        npm i --no-fund --no-audit puppeteer@22
+        npx puppeteer browsers install chrome
         node - <<'NODE'
         const puppeteer = require('puppeteer');
 
@@ -69,6 +71,7 @@ jobs:
         NODE
 
     - name: Deliver Email to Me (PDF)
+      if: always()
       env:
         GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
         GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
